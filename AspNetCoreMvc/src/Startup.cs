@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using C4D.AspNetCore.Tutorial.Models;
 using C4D.AspNetCore.Tutorial.Services;
+using StackExchange.Redis;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace C4D.AspNetCore.Tutorial
 {
@@ -36,6 +38,14 @@ namespace C4D.AspNetCore.Tutorial
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			//This is a hack to overcome the issue with suporting connection based on host name for :nix systems
+			var redisHost = Configuration.GetValue<string>("Redis:Host");
+			var redisPort = Configuration.GetValue<int>("Redis:Port");
+			var redisIp = System.Net.Dns.GetHostEntryAsync(redisHost).Result.AddressList.Last();
+			var redis = ConnectionMultiplexer.Connect($"{redisIp}:{redisPort}");
+
+			services.AddDataProtection().PersistKeysToRedis(redis, "DataProtection-Keys");
+
 			services.AddIdentityWithMongoStores(Configuration.GetConnectionString("DefaultConnection"));
 
 			services.AddMvc();
