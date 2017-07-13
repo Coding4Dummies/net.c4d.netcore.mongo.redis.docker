@@ -14,7 +14,6 @@ namespace C4D.AspNetCore.Tutorial
 			var host = new WebHostBuilder()
 				.UseKestrel()
 				.UseContentRoot(Directory.GetCurrentDirectory())
-				//.UseIISIntegration()
 				.UseUrls("http://*:60000")
 				.UseStartup<Startup>()
 				.Build();
