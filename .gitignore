@@ -29,3 +29,4 @@ lib/
 _ReSharper*/
 [Tt]est[Rr]esult*
 publish/
+.vscode
